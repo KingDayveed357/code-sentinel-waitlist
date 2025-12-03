@@ -80,7 +80,6 @@ export default function Footer() {
         {/* Bottom Text */}
         <p className="text-xs text-muted-foreground">
           © {currentYear} CodeSentinel. Built for developers, by developers.
-.
         </p>
       </div>
     </footer>

@@ -110,7 +110,7 @@ export default function MarketRealitySection() {
       
       <div className="max-w-7xl mx-auto">
         <div className="text-center md:mb-16 mb-0  space-y-4 animate-fade-in">
-          <h2 className="text-4xl md:text-6xl font-bold text-balance bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
+          <h2 className="text-4xl dark:text-white md:text-6xl font-bold text-balance bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
             It's simple,<br />responsive and fast.
           </h2>
           <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">

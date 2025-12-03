@@ -1,66 +1,79 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { useState, useEffect } from "react"
-import { Share2, Check, Copy, Trophy, Users, Loader2, Mail, Twitter, Linkedin } from "lucide-react"
-import { supabase } from "@/lib/supabase-client"
+import type React from "react";
+import { useState, useEffect } from "react";
+import {
+  Share2,
+  Check,
+  Copy,
+  Trophy,
+  Users,
+  Loader2,
+  Mail,
+  Twitter,
+  Linkedin,
+} from "lucide-react";
+import { supabase } from "@/lib/supabase-client";
 
 interface WaitlistEntry {
-  id: string
-  email: string
-  referral_code: string
-  referral_count: number
-  position: number
-  created_at: string
+  id: string;
+  email: string;
+  referral_code: string;
+  referral_count: number;
+  position: number;
+  created_at: string;
 }
 
 export default function GamifiedWaitlist() {
-  const [email, setEmail] = useState("")
-  const [submitting, setSubmitting] = useState(false)
-  const [submitted, setSubmitted] = useState(false)
-  const [copied, setCopied] = useState(false)
-  const [referralCount, setReferralCount] = useState(0)
-  const [referralCode, setReferralCode] = useState("")
-  const [position, setPosition] = useState<number | null>(null)
-  const [totalWaitlist, setTotalWaitlist] = useState(2847)
-  const [error, setError] = useState("")
-  const [referredBy, setReferredBy] = useState<string | null>(null)
+  const [email, setEmail] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const [referralCount, setReferralCount] = useState(0);
+  const [referralCode, setReferralCode] = useState("");
+  const [position, setPosition] = useState<number | null>(null);
+  const [totalWaitlist, setTotalWaitlist] = useState(0);
+  const [error, setError] = useState("");
+  const [referredBy, setReferredBy] = useState<string | null>(null);
+  const [loadingCount, setLoadingCount] = useState(true);
 
   useEffect(() => {
-    if (typeof window === 'undefined') return
+    if (typeof window === "undefined") return;
 
     // Get referral code from URL
-    const params = new URLSearchParams(window.location.search)
-    const refCode = params.get("ref")
+    const params = new URLSearchParams(window.location.search);
+    const refCode = params.get("ref");
     if (refCode) {
-      setReferredBy(refCode)
+      setReferredBy(refCode);
     }
 
     // Fetch total waitlist count
-    fetchTotalCount()
-  }, [])
+    fetchTotalCount();
+  }, []);
 
   const fetchTotalCount = async () => {
     try {
       const { count, error } = await supabase
         .from("waitlist_entries")
-        .select("*", { count: "exact", head: true })
+        .select("*", { count: "exact", head: true });
 
-      if (error) throw error
+      if (error) throw error;
       if (count !== null) {
-        setTotalWaitlist(count)
+        setTotalWaitlist(count);
       }
     } catch (err) {
-      console.error("Error fetching count:", err)
+      console.error("Error fetching count:", err);
+    } finally {
+      setLoadingCount(false);
     }
-  }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!email) return
+    e.preventDefault();
+    if (!email) return;
 
-    setSubmitting(true)
-    setError("")
+    setSubmitting(true);
+    setError("");
 
     try {
       // Check if email already exists
@@ -68,16 +81,16 @@ export default function GamifiedWaitlist() {
         .from("waitlist_entries")
         .select("*")
         .eq("email", email)
-        .single()
+        .single();
 
       if (existingEntry) {
         // Email already on waitlist, show their info
-        setReferralCode(existingEntry.referral_code)
-        setReferralCount(existingEntry.referral_count)
-        setPosition(existingEntry.position)
-        setSubmitted(true)
-        setSubmitting(false)
-        return
+        setReferralCode(existingEntry.referral_code);
+        setReferralCount(existingEntry.referral_count);
+        setPosition(existingEntry.position);
+        setSubmitted(true);
+        setSubmitting(false);
+        return;
       }
 
       // If referred by someone, increment their count
@@ -86,13 +99,13 @@ export default function GamifiedWaitlist() {
           .from("waitlist_entries")
           .select("referral_count")
           .eq("referral_code", referredBy)
-          .single()
+          .single();
 
         if (referrer) {
           await supabase
             .from("waitlist_entries")
             .update({ referral_count: referrer.referral_count + 1 })
-            .eq("referral_code", referredBy)
+            .eq("referral_code", referredBy);
         }
       }
 
@@ -106,65 +119,70 @@ export default function GamifiedWaitlist() {
           },
         ])
         .select()
-        .single()
+        .single();
 
-      if (insertError) throw insertError
+      if (insertError) throw insertError;
 
       if (data) {
-        setReferralCode(data.referral_code)
-        setReferralCount(data.referral_count)
-        setPosition(data.position)
-        setSubmitted(true)
-        setTotalWaitlist((prev) => prev + 1)
+        setReferralCode(data.referral_code);
+        setReferralCount(data.referral_count);
+        setPosition(data.position);
+        setSubmitted(true);
+        setTotalWaitlist((prev) => prev + 1);
 
         // Update URL with referral code
-        if (typeof window !== 'undefined') {
-          const newUrl = new URL(window.location.href)
-          newUrl.searchParams.delete("ref")
-          window.history.replaceState({}, "", newUrl)
+        if (typeof window !== "undefined") {
+          const newUrl = new URL(window.location.href);
+          newUrl.searchParams.delete("ref");
+          window.history.replaceState({}, "", newUrl);
         }
       }
     } catch (err: any) {
-      console.error("Error submitting:", err)
-      setError(err.message || "Something went wrong. Please try again.")
+      console.error("Error submitting:", err);
+      setError(err.message || "Something went wrong. Please try again.");
     } finally {
-      setSubmitting(false)
+      setSubmitting(false);
     }
-  }
+  };
 
   const getReferralLink = () => {
-    if (typeof window === 'undefined') return ''
-    const baseUrl = window.location.origin + window.location.pathname
-    return `${baseUrl}?ref=${referralCode}`
-  }
+    if (typeof window === "undefined") return "";
+    const baseUrl = window.location.origin + window.location.pathname;
+    return `${baseUrl}?ref=${referralCode}`;
+  };
 
   const handleCopyLink = () => {
-    navigator.clipboard.writeText(getReferralLink())
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
-  }
+    navigator.clipboard.writeText(getReferralLink());
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   const handleShare = (platform: "twitter" | "linkedin" | "email") => {
-    if (typeof window === 'undefined') return
-    const link = getReferralLink()
-    const text = "Join me on the CodeSentinel waitlist - automated security scanning for developers!"
+    if (typeof window === "undefined") return;
+    const link = getReferralLink();
+    const text =
+      "Join me on the CodeSentinel waitlist - automated security scanning for developers!";
 
     const urls = {
-      twitter: `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(link)}`,
-      linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(link)}`,
-      email: `mailto:?subject=${encodeURIComponent("Join CodeSentinel")}&body=${encodeURIComponent(
-        `${text}\n\n${link}`
+      twitter: `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+        text
+      )}&url=${encodeURIComponent(link)}`,
+      linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
+        link
       )}`,
-    }
+      email: `mailto:?subject=${encodeURIComponent(
+        "Join CodeSentinel"
+      )}&body=${encodeURIComponent(`${text}\n\n${link}`)}`,
+    };
 
-    window.open(urls[platform], "_blank", "width=600,height=400")
-  }
+    window.open(urls[platform], "_blank", "width=600,height=400");
+  };
 
   const referralTiers = [
     { count: 1, reward: "Skip 50 spots", unlocked: referralCount >= 1 },
     { count: 5, reward: "Early Beta Access", unlocked: referralCount >= 5 },
     { count: 10, reward: "1 Month Pro Free", unlocked: referralCount >= 10 },
-  ]
+  ];
 
   return (
     <section id="waitlist" className="py-20 px-4 sm:px-6 lg:px-8 relative">
@@ -173,22 +191,25 @@ export default function GamifiedWaitlist() {
       </div>
 
       <div className="max-w-4xl mx-auto">
-         <div className="relative rounded-2xl p-8 md:p-12 shadow-2xl bg-gradient-to-br from-card to-card/50">
+        <div className="relative rounded-2xl p-8 md:p-12 shadow-2xl bg-gradient-to-br from-card to-card/50">
           {/* Animated border */}
           <div className="absolute inset-0 rounded-2xl overflow-hidden pointer-events-none">
             <div className="absolute inset-0 rounded-2xl border border-accent/20" />
-            <div 
+            <div
               className="absolute inset-0 rounded-2xl"
               style={{
                 background: `conic-gradient(from 0deg, transparent 0%, transparent 85%, rgba(var(--accent-rgb, 120, 119, 198), 0.6) 90%, transparent 95%, transparent 100%)`,
-                animation: 'rotateBorder 4s linear infinite',
+                animation: "rotateBorder 4s linear infinite",
               }}
             />
           </div>
           <div className="text-center space-y-6">
-            <h2 className="text-4xl md:text-5xl font-bold text-balance">Join the CodeSentinel Waitlist</h2>
+            <h2 className="text-4xl md:text-5xl font-bold text-balance">
+              Join the CodeSentinel Waitlist
+            </h2>
             <p className="text-lg text-muted-foreground">
-              Be among the first developers to experience the future of secure software development.
+              Be among the first developers to experience the future of secure
+              software development.
             </p>
 
             {!submitted ? (
@@ -218,7 +239,9 @@ export default function GamifiedWaitlist() {
                     )}
                   </button>
                 </div>
-                {error && <p className="text-sm text-red-500 text-center">{error}</p>}
+                {error && (
+                  <p className="text-sm text-red-500 text-center">{error}</p>
+                )}
                 {referredBy && (
                   <p className="text-sm text-accent text-center">
                     🎉 You've been referred! You'll get priority access.
@@ -230,7 +253,9 @@ export default function GamifiedWaitlist() {
                 <div className="p-6 rounded-xl bg-accent/10 border border-accent/30">
                   <div className="flex items-center justify-center gap-2 mb-3">
                     <Check className="w-6 h-6 text-green-500" />
-                    <h3 className="text-xl font-bold text-foreground">You're on the list!</h3>
+                    <h3 className="text-xl font-bold text-foreground">
+                      You're on the list!
+                    </h3>
                   </div>
                   {position && (
                     <p className="text-2xl font-bold text-accent mb-2">
@@ -238,7 +263,8 @@ export default function GamifiedWaitlist() {
                     </p>
                   )}
                   <p className="text-sm text-muted-foreground">
-                    Check your email for confirmation. Share your link below to move up!
+                    Check your email for confirmation. Share your link below to
+                    move up!
                   </p>
                 </div>
 
@@ -259,18 +285,32 @@ export default function GamifiedWaitlist() {
                           }`}
                         >
                           <div className="flex items-center justify-center gap-2 mb-2">
-                            <Trophy className={`w-4 h-4 ${tier.unlocked ? "text-accent" : "text-muted-foreground"}`} />
-                            <span className="text-xs font-bold text-accent">{tier.count}</span>
+                            <Trophy
+                              className={`w-4 h-4 ${
+                                tier.unlocked
+                                  ? "text-accent"
+                                  : "text-muted-foreground"
+                              }`}
+                            />
+                            <span className="text-xs font-bold text-accent">
+                              {tier.count}
+                            </span>
                           </div>
-                          <p className="text-xs font-semibold text-foreground text-center">{tier.reward}</p>
-                          {tier.unlocked && <Check className="w-4 h-4 text-green-500 mx-auto mt-2" />}
+                          <p className="text-xs font-semibold text-foreground text-center">
+                            {tier.reward}
+                          </p>
+                          {tier.unlocked && (
+                            <Check className="w-4 h-4 text-green-500 mx-auto mt-2" />
+                          )}
                         </div>
                       ))}
                     </div>
                   </div>
 
                   <div className="space-y-3">
-                    <p className="text-sm text-muted-foreground font-semibold">Share your referral link:</p>
+                    <p className="text-sm text-muted-foreground font-semibold">
+                      Share your referral link:
+                    </p>
                     <div className="flex items-center gap-2">
                       <input
                         type="text"
@@ -316,12 +356,12 @@ export default function GamifiedWaitlist() {
                     </button>
                     <button
                       onClick={() => {
-                        if (typeof window !== 'undefined' && navigator.share) {
+                        if (typeof window !== "undefined" && navigator.share) {
                           navigator.share({
                             title: "Join CodeSentinel",
                             text: "Join me on the CodeSentinel waitlist!",
                             url: getReferralLink(),
-                          })
+                          });
                         }
                       }}
                       className="p-3 rounded-lg border border-border/50 hover:bg-accent/10 hover:border-accent/50 transition-colors hover:scale-110 active:scale-95 duration-200"
@@ -337,16 +377,25 @@ export default function GamifiedWaitlist() {
             {!submitted && (
               <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground pt-4">
                 <Users className="w-4 h-4 text-accent" />
-                <span>
-                  <span className="font-semibold text-foreground">{totalWaitlist.toLocaleString()}</span> developers
-                  already on the waitlist
-                </span>
+                 <span>
+      <span className="font-semibold text-foreground">
+        {loadingCount ? (
+          <span className="inline-flex gap-1">
+            <span className="w-1 h-1 rounded-full bg-accent animate-bounce" style={{ animationDelay: '0s' }} />
+            <span className="w-1 h-1 rounded-full bg-accent animate-bounce" style={{ animationDelay: '0.2s' }} />
+            <span className="w-1 h-1 rounded-full bg-accent animate-bounce" style={{ animationDelay: '0.4s' }} />
+          </span>
+        ) : (
+          totalWaitlist.toLocaleString()
+        )}
+      </span>{" "}
+      developers already on the waitlist
+    </span>
               </div>
             )}
           </div>
         </div>
       </div>
     </section>
-  )
+  );
 }
-
