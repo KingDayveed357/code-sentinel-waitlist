@@ -51,6 +51,7 @@ export default function DemoModal({ isOpen, onClose }: { isOpen: boolean; onClos
   }
 
   const getDemoUrl = () => {
+    if (typeof window === 'undefined') return ''
     return window.location.origin + "?demo=true"
   }
 
@@ -73,7 +74,9 @@ export default function DemoModal({ isOpen, onClose }: { isOpen: boolean; onClos
       )}`,
     }
 
-    window.open(urls[platform], "_blank", "width=600,height=400")
+    if (typeof window !== 'undefined') {
+      window.open(urls[platform], "_blank", "width=600,height=400")
+    }
     setShowShareMenu(false)
   }
 

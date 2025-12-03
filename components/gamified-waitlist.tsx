@@ -27,6 +27,8 @@ export default function GamifiedWaitlist() {
   const [referredBy, setReferredBy] = useState<string | null>(null)
 
   useEffect(() => {
+    if (typeof window === 'undefined') return
+
     // Get referral code from URL
     const params = new URLSearchParams(window.location.search)
     const refCode = params.get("ref")
@@ -116,9 +118,11 @@ export default function GamifiedWaitlist() {
         setTotalWaitlist((prev) => prev + 1)
 
         // Update URL with referral code
-        const newUrl = new URL(window.location.href)
-        newUrl.searchParams.delete("ref")
-        window.history.replaceState({}, "", newUrl)
+        if (typeof window !== 'undefined') {
+          const newUrl = new URL(window.location.href)
+          newUrl.searchParams.delete("ref")
+          window.history.replaceState({}, "", newUrl)
+        }
       }
     } catch (err: any) {
       console.error("Error submitting:", err)
@@ -129,6 +133,7 @@ export default function GamifiedWaitlist() {
   }
 
   const getReferralLink = () => {
+    if (typeof window === 'undefined') return ''
     const baseUrl = window.location.origin + window.location.pathname
     return `${baseUrl}?ref=${referralCode}`
   }
@@ -140,6 +145,7 @@ export default function GamifiedWaitlist() {
   }
 
   const handleShare = (platform: "twitter" | "linkedin" | "email") => {
+    if (typeof window === 'undefined') return
     const link = getReferralLink()
     const text = "Join me on the CodeSentinel waitlist - automated security scanning for developers!"
 
@@ -310,7 +316,7 @@ export default function GamifiedWaitlist() {
                     </button>
                     <button
                       onClick={() => {
-                        if (navigator.share) {
+                        if (typeof window !== 'undefined' && navigator.share) {
                           navigator.share({
                             title: "Join CodeSentinel",
                             text: "Join me on the CodeSentinel waitlist!",

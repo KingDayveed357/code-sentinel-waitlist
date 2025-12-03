@@ -19,12 +19,14 @@ export default function HomePage() {
   const waitlistRef = useRef<HTMLDivElement | null>(null)
 
   const isSectionInView = useCallback((element: HTMLElement | null) => {
-    if (!element) return false
+    if (!element || typeof window === 'undefined') return false
     const rect = element.getBoundingClientRect()
     return rect.top < window.innerHeight && rect.bottom > 0
   }, [])
 
   useEffect(() => {
+    if (typeof window === 'undefined') return
+
     const isDark = document.documentElement.classList.contains("dark")
     setDarkMode(isDark)
 
@@ -52,6 +54,7 @@ export default function HomePage() {
   }, [bannerDismissed, isSectionInView])
 
   const toggleDarkMode = () => {
+    if (typeof window === 'undefined' || typeof document === 'undefined') return
     const html = document.documentElement
     html.classList.toggle("dark")
     setDarkMode(html.classList.contains("dark"))

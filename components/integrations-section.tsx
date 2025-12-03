@@ -7,12 +7,25 @@ export default function IntegrationsSection() {
   const [selectedCategory, setSelectedCategory] = React.useState<string>("all")
   const [activeWorkflowNode, setActiveWorkflowNode] = React.useState<number>(0)
   const [mousePosition, setMousePosition] = React.useState({ x: 0, y: 0 })
+  const [isDesktop, setIsDesktop] = React.useState(false)
 
   React.useEffect(() => {
     const interval = setInterval(() => {
       setActiveWorkflowNode((prev) => (prev + 1) % 8)
     }, 2000)
     return () => clearInterval(interval)
+  }, [])
+
+  React.useEffect(() => {
+    if (typeof window === 'undefined') return
+    setIsDesktop(window.innerWidth > 768)
+    
+    const handleResize = () => {
+      setIsDesktop(window.innerWidth > 768)
+    }
+    
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
   }, [])
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -106,7 +119,7 @@ export default function IntegrationsSection() {
             className="relative w-full aspect-square md:aspect-[16/11] bg-gradient-to-br from-background via-muted/20 to-background rounded-3xl border border-border shadow-2xl overflow-hidden"
             onMouseMove={handleMouseMove}
             style={{
-              transform: window.innerWidth > 768 ? `rotateX(${mousePosition.y * 0.2}deg) rotateY(${mousePosition.x * 0.2}deg)` : 'none',
+              transform: isDesktop ? `rotateX(${mousePosition.y * 0.2}deg) rotateY(${mousePosition.x * 0.2}deg)` : 'none',
               transition: 'transform 0.1s ease-out',
               transformStyle: 'preserve-3d',
               perspective: '1000px'
