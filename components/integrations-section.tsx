@@ -93,16 +93,16 @@ export default function IntegrationsSection() {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-16 space-y-4">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-muted border border-border">
-            <Workflow className="w-4 h-4 text-foreground/70" />
-            <span className="text-sm font-medium text-foreground/70">INTEGRATIONS</span>
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent/5 border border-accent/20 font-mono">
+            <Workflow className="w-4 h-4 text-accent" />
+            <span className="text-[10px] font-bold text-accent uppercase tracking-widest">SENTINEL HUB v1.0</span>
           </div>
-          <h2 className="text-4xl md:text-6xl font-bold text-foreground">
-            Endless possibilities.
+          <h2 className="text-4xl md:text-6xl font-black text-foreground tracking-tight">
+            Force Multiplier<br />for Your Build.
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Enhance your experience with a wide variety of integrations.
-            From everyday essentials to powerful pro add-ons.
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto font-medium leading-relaxed">
+            CodeSentinel acts as the absolute guard between your local code and the public internet. 
+            We integrate deeply with the tools you already trust to enforce security at the edge.
           </p>
         </div>
 

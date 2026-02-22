@@ -42,51 +42,50 @@ export default function DashboardPreview() {
   }, [])
 
   return (
-    <section className="py-20 px-4 sm:px-6 lg:px-8">
+    <section className="py-24 px-4 sm:px-6 lg:px-8 bg-black/5 dark:bg-white/[0.01]">
       <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-12 space-y-4 animate-fade-in">
-          <h2 className="text-4xl md:text-5xl font-bold">Intuitive Dashboard</h2>
-          <p className="text-lg text-muted-foreground">
-            Get instant visibility into your security posture with real-time monitoring.
+        <div className="text-center mb-16 space-y-4 animate-fade-in">
+          <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight italic text-accent">Zero Noise. Absolute Control.</h2>
+          <p className="text-lg text-muted-foreground font-medium max-w-2xl mx-auto">
+            Get instant visibility into your security posture with our Zero-Noise Filter — showing only what matters for your velocity.
           </p>
         </div>
 
-        <div className="rounded-xl border border-border/50 overflow-hidden shadow-2xl bg-card hover:shadow-3xl transition-shadow duration-300">
-          <div className="bg-gradient-to-r from-accent/10 to-accent/5 p-8">
-            <div className="space-y-6 animate-slide-in-down">
+        <div className="rounded-2xl border border-border/50 overflow-hidden shadow-2xl bg-card transition-all duration-500 hover:border-accent/30">
+          <div className="p-10">
+            <div className="space-y-8 animate-slide-in-down">
               {/* Header bar */}
               <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="text-2xl font-bold">Security Overview</h3>
-                  <p className="text-sm text-muted-foreground mt-1">Last scanned: 2 minutes ago</p>
+                <div className="space-y-1">
+                  <h3 className="text-2xl font-black tracking-tight font-mono uppercase">Sentinel Overview</h3>
+                  <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Scanning Active: 2ms ago</p>
                 </div>
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-500/10 border border-green-500/30 animate-bounce-in">
-                  <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                  <span className="text-sm font-semibold text-green-600 dark:text-green-400">All Clear</span>
+                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-accent/10 border border-accent/30">
+                  <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
+                  <span className="text-xs font-bold uppercase tracking-widest text-accent font-mono">Sentinel Active</span>
                 </div>
               </div>
 
               {/* Stats grid */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
                 {[
-                  { label: "Repositories", value: displayStats.repos, color: "text-blue-600 dark:text-blue-400" },
-                  { label: "Scans Today", value: displayStats.scans, color: "text-green-600 dark:text-green-400" },
+                  { label: "Repositories Guarded", value: displayStats.repos, color: "text-accent" },
+                  { label: "Scans (Last 24h)", value: displayStats.scans, color: "text-foreground" },
                   {
-                    label: "Vulnerabilities",
+                    label: "Kill-Chain Threats Blocked",
                     value: displayStats.vulnerabilities,
-                    color: "text-yellow-600 dark:text-yellow-400",
+                    color: "text-red-500",
                   },
-                  { label: "Critical Issues", value: displayStats.critical, color: "text-red-600 dark:text-red-400" },
+                  { label: "Secure PRs Generated", value: 12, color: "text-green-500" },
                 ].map((stat, idx) => (
                   <div
                     key={idx}
-                    className="p-4 rounded-lg bg-card border border-border/30 hover:border-accent/50 hover:shadow-lg transition-all hover:scale-105 duration-300 animate-count-up group cursor-default"
-                    style={{ animationDelay: `${idx * 0.1}s` }}
+                    className="p-6 rounded-xl bg-muted/30 border border-border/50 hover:border-accent/50 hover:bg-muted/50 transition-all duration-300 group cursor-default"
                   >
-                    <p className="text-xs text-muted-foreground mb-1 group-hover:text-accent transition-colors">
+                    <p className="text-[10px] font-bold text-muted-foreground mb-2 group-hover:text-accent transition-colors uppercase tracking-widest">
                       {stat.label}
                     </p>
-                    <p className={`text-2xl font-bold transition-all group-hover:scale-110 ${stat.color}`}>
+                    <p className={`text-3xl font-black tracking-tighter ${stat.color}`}>
                       {stat.value}
                     </p>
                   </div>

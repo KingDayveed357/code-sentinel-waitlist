@@ -5,44 +5,44 @@ import React from "react"
 export default function MarketRealitySection() {
   const quotes = [
     {
-      text: "We spent 6 hours debugging a vulnerability that should have been caught in CI. We need better scanning.",
-      source: "GitHub Issue #4521 - Security Best Practices",
-      category: "Security",
+      text: "The 3 AM production breach call was a death sentence for our investor trust. We never saw the leak coming.",
+      source: "Post-Mortem: Series A Fintech Founder",
+      category: "Identity Pain",
     },
     {
-      text: "Our CI/CD pipeline fails 40% of the time due to slow security scans. This is killing our deployment velocity.",
-      source: "Reddit r/devops - CI/CD Pipeline Issues",
-      category: "Performance",
+      text: "I lost my entire Sunday to an emergency patch for a vulnerability Snyk marked as 'Low'. Never again.",
+      source: "Lead Engineer @ High-Growth Startup",
+      category: "Velocity",
     },
     {
-      text: "Enforcing security policies across 50+ repositories is a nightmare. We need automation.",
-      source: "Dev Blog Post - Scaling Security",
-      category: "Compliance",
+      text: "Our CI pipeline was a graveyard of alerts. We ignored everything—including the one that actually mattered.",
+      source: "CTO, YC-Backed DevTool",
+      category: "Noise",
     },
     {
-      text: "We discovered a critical API key exposed in production. Detection took 3 weeks. Way too long.",
-      source: "Security Conference Talk - Real Incidents",
-      category: "Vulnerability",
+      text: "The embarrassment of leaking customer API keys on Twitter is something you never truly recover from.",
+      source: "Bootstrapped SaaS Founder",
+      category: "Reputation",
     },
     {
-      text: "Every developer interprets security policies differently. We need a unified solution.",
-      source: "Hacker News - DevOps Discussion",
-      category: "Policy",
+      text: "I forced my team to read 400-page security PDF reports. Our velocity dropped to zero. We needed a Sentinel.",
+      source: "VP Engineering, Scale-up",
+      category: "Bureaucracy",
     },
     {
-      text: "Our security team can't keep up with code changes. Manual reviews are becoming impossible.",
-      source: "Tech Forum - Security Automation",
-      category: "Scalability",
+      text: "We ship at the speed of AI. Generic scanners simply cannot keep up with our PR volume.",
+      source: "AI Engineering Lead",
+      category: "Velocity",
     },
   ]
 
   const categoryColors: Record<string, string> = {
-    Security: "bg-red-500/10 text-red-600 border-red-500/20",
-    Performance: "bg-yellow-500/10 text-yellow-600 border-yellow-500/20",
-    Compliance: "bg-blue-500/10 text-blue-600 border-blue-500/20",
-    Vulnerability: "bg-orange-500/10 text-orange-600 border-orange-500/20",
-    Policy: "bg-purple-500/10 text-purple-600 border-purple-500/20",
-    Scalability: "bg-green-500/10 text-green-600 border-green-500/20",
+    "Identity Pain": "bg-red-500/10 text-red-600 border-red-500/20",
+    Velocity: "bg-yellow-500/10 text-yellow-600 border-yellow-500/20",
+    Noise: "bg-blue-500/10 text-blue-600 border-blue-500/20",
+    Reputation: "bg-orange-500/10 text-orange-600 border-orange-500/20",
+    Bureaucracy: "bg-purple-500/10 text-purple-600 border-purple-500/20",
+    "Scalability": "bg-green-500/10 text-green-600 border-green-500/20",
   }
 
  const [currentIndex, setCurrentIndex] = React.useState(0)

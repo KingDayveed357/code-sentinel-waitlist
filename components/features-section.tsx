@@ -6,33 +6,33 @@ export default function FeaturesSection() {
   const features = [
     {
       icon: Shield,
-      title: "Real-time Security",
-      description: "Detect vulnerabilities instantly as code is pushed to your repository.",
+      title: "Zero-Noise Sentinel",
+      description: "We filter out 99% of generic 'Medium' alerts. You only hear from us when it's a critical kill-chain threat.",
     },
     {
       icon: Zap,
-      title: "CI/CD Integration",
-      description: "Seamlessly integrates with GitHub Actions, GitLab CI, and Jenkins.",
+      title: "Contextual AI Fixes",
+      description: "Don't just find vulnerabilities—fix them. We generate secure PR suggestions with full contextual awareness.",
     },
     {
       icon: GitBranch,
-      title: "Policy Enforcement",
-      description: "Define and enforce custom security policies across your organization.",
+      title: "Immutable CI Guard",
+      description: "Your velocity is sacred. We block breaches at the PR level without slowing down your deployment pipeline.",
     },
     {
       icon: BarChart3,
-      title: "Detailed Analytics",
-      description: "Comprehensive dashboards showing trends and insights over time.",
+      title: "Founder's Dashboard",
+      description: "No fluff. Just the raw truth about your security posture and the time saved on manual security reviews.",
     },
   ]
 
   return (
-    <section id="features" className="py-20 px-4 sm:px-6 lg:px-8 bg-muted/30">
+    <section id="features" className="py-24 px-4 sm:px-6 lg:px-8 bg-muted/30">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-16 space-y-4">
-          <h2 className="text-4xl md:text-5xl font-bold">Powerful Features Built for Teams</h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Everything you need to secure your codebase and maintain developer velocity.
+          <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight">Built for Velocity. Hardened by AI.</h2>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto font-medium">
+            CodeSentinel is the only security layer that understands the difference between a minor alert and a business-ending breach.
           </p>
         </div>
 

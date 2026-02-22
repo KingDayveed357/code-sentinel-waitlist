@@ -1,24 +1,28 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Geist } from "next/font/google"
+import { Inter, JetBrains_Mono } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import "./globals.css"
 
-const geist = Geist({ 
+const inter = Inter({ 
   subsets: ["latin"],
-  display: "swap",
-  variable: "--font-geist"
+  variable: "--font-inter"
+})
+
+const mono = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-mono"
 })
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://codesentinel.dev"),
+  metadataBase: new URL("https://code-sentinel.dev"),
   
   title: {
-    default: "CodeSentinel - Automated Security Scanning for Developers | Ship Secure Code",
+    default: "CodeSentinel | Immutable CI Security for High-Velocity Teams",
     template: "%s | CodeSentinel"
   },
   
-  description: "CodeSentinel automates security scanning for your repositories. Detect vulnerabilities, enforce policies, and ship secure code with confidence. Join 2,800+ developers protecting their code.",
+  description: "Stop drowning in security noise. CodeSentinel delivers zero-noise CI security and AI-powered fixes for teams that ship at the speed of thought.",
   
   keywords: [
     "security scanning",
@@ -58,13 +62,13 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://codesentinel.dev",
+    url: "https://code-sentinel.dev",
     title: "CodeSentinel - Ship Secure Code with Automated Security Scanning",
     description: "Automate security scans, enforce policies, and ship with confidence. CodeSentinel protects your code before it reaches production. Join 2,800+ developers.",
     siteName: "CodeSentinel",
     images: [
       {
-        url: "/og-image.png",
+        url: "/logo/logo-preview.png",
         width: 1200,
         height: 630,
         alt: "CodeSentinel - Automated Security Scanning",
@@ -76,7 +80,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "CodeSentinel - Ship Secure Code with Automated Security Scanning",
     description: "Automate security scans, enforce policies, and ship with confidence. Join 2,800+ developers protecting their code.",
-    images: ["/og-image.png"],
+    images: ["/logo/logo-preview.png"],
     creator: "@codesentinel",
   },
 
@@ -95,15 +99,15 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       {
-        url: "/icon-light-32x32.png",
+        url: "/logo/logo-icons.png",
         media: "(prefers-color-scheme: light)",
       },
       {
-        url: "/icon-dark-32x32.png",
+        url: "/logo/logo-icons.png",
         media: "(prefers-color-scheme: dark)",
       },
       {
-        url: "/icon.svg",
+        url: "/logo/logo-icons.png",
         type: "image/svg+xml",
       },
     ],
@@ -113,7 +117,7 @@ export const metadata: Metadata = {
   manifest: "/manifest.json",
 
   alternates: {
-    canonical: "https://codesentinel.dev",
+    canonical: "https://code-sentinel.dev",
   },
 
   verification: {
@@ -161,7 +165,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning className={geist.variable}>
+    <html lang="en" suppressHydrationWarning className={`${inter.variable} ${mono.variable}`}>
       <head>
         <script
           type="application/ld+json"
@@ -170,7 +174,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
       </head>
-      <body className={`${geist.className} font-sans antialiased`}>
+      <body className={`${inter.className} font-sans antialiased`}>
         {children}
         <Analytics />
       </body>

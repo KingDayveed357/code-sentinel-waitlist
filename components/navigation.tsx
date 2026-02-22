@@ -15,35 +15,28 @@ export default function Navigation({ darkMode, toggleDarkMode }: NavigationProps
   const navLinks = [
     { href: "#features", label: "Features" },
     { href: "#integrations", label: "Integrations" },
-    { href: "#waitlist", label: "Join Waitlist" },
+    { href: "#waitlist", label: "Secure Access" },
   ]
 
   return (
-    <nav className="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-md border-b border-border">
+    <nav className="fixed top-0 w-full z-50 bg-zinc-100/95 dark:bg-background/80 backdrop-blur-md border-b border-border/50">
       <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
 
           {/* Logo (light/dark auto switch) */}
           <a href="/" className="flex items-center gap-2 hover:opacity-90 transition-opacity">
-            {darkMode ? (
-              <Image
-                src="/logo-light.png"
-                alt="CodeSentinel Logo"
-                width={200}
-                height={40}
-                className="object-contain"
-                priority
-              />
-            ) : (
-              <Image
-                src="/logo-dark.png"
-                alt="CodeSentinel Logo"
-                width={200}
-                height={40}
-                className="object-contain"
-                priority
-              />
-            )}
+            <Image
+              src="/logo/logo.png"
+              alt="CodeSentinel Logo"
+              width={200}
+              height={40}
+              className={`object-contain transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] ${
+                !darkMode 
+                  ? "invert hue-rotate-180 brightness-95 drop-shadow-[0_2px_10px_rgba(0,0,0,0.05)]" 
+                  : "dark:drop-shadow-[0_0_20px_rgba(45,212,191,0.15)]"
+              }`}
+              priority
+            />
           </a>
 
           {/* Desktop Navigation */}

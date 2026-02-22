@@ -1,8 +1,6 @@
-"use client"
-
 import { useState } from "react"
-import { ChevronRight, ShieldCheck, Zap, GitBranch } from "lucide-react"
-import AnimatedCode from "./animated-code"
+import { ChevronRight, Shield, Zap, GitPullRequest, Search } from "lucide-react"
+import SentinelAlert from "./sentinel-alert"
 import DemoModal from "./demo-modal"
 
 export default function HeroSection() {
@@ -14,65 +12,62 @@ export default function HeroSection() {
 
         {/* Background layers */}
         <div className="absolute inset-0 -z-10">
-          {/* Subtle noise texture */}
           <div className="absolute inset-0 opacity-[0.04] bg-[url('/noise.png')] bg-repeat" />
-
-          {/* Gradient orbs */}
           <div className="absolute top-10 right-[-200px] w-[500px] h-[500px] bg-accent/15 blur-[150px] rounded-full" />
           <div className="absolute bottom-0 left-[-200px] w-[450px] h-[450px] bg-primary/10 blur-[180px] rounded-full" />
         </div>
 
-        <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+        <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
 
           {/* Left Side */}
-          <div className="space-y-7 animate-fade-up">
+          <div className="space-y-8 animate-fade-up">
 
             {/* Status pill */}
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-accent/30 bg-accent/10 backdrop-blur-sm">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-accent/30 bg-accent/5 backdrop-blur-sm">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75" />
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-accent" />
               </span>
-              <span className="text-xs font-semibold text-accent">Beta Access Coming Soon!</span>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-accent font-mono">Status: Private Beta Waves</span>
             </div>
 
             {/* Title */}
-            <h1 className="text-5xl md:text-6xl font-extrabold leading-tight dark:text-white tracking-tight">
-              Ship Secure.<br />
-              <span className="text-accent">Scan Smarter.</span>
+            <h1 className="text-5xl md:text-7xl font-extrabold leading-[1.1] dark:text-white tracking-tight">
+              The Security Engineer<br />
+              <span className="text-accent italic">You Can't Afford.</span>
             </h1>
 
-            {/* Subtitle */}
-            <p className="text-lg md:text-xl text-muted-foreground max-w-lg leading-relaxed">
-              CodeSentinel continuously monitors your repositories, analyzes dependencies, 
-              flags dangerous patterns, and suggests AI-powered fixes—all before vulnerabilities reach production.
+            {/* Subtitle - Identity Pain & Velocity */}
+            <p className="text-lg md:text-xl text-muted-foreground max-w-xl leading-relaxed font-medium">
+              Stop drowning in security noise. CodeSentinel delivers zero-noise CI security and AI-powered fixes for founders and teams that ship at the speed of thought.
             </p>
 
             {/* CTA buttons */}
             <div className="flex flex-col sm:flex-row gap-4 pt-4">
               <a href="#waitlist" 
-              className="px-7 py-3 rounded-lg bg-accent text-center text-accent-foreground font-semibold shadow-lg hover:shadow-accent/30 hover:scale-[1.02] active:scale-[0.98] transition-all"
+              className="px-8 py-4 rounded-lg bg-accent text-center text-accent-foreground font-bold shadow-2xl hover:shadow-accent/40 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 group"
               >
-              Join the Waitlist
+              Secure My Repos
+              <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </a>
             
 
               <button
                 onClick={() => setIsDemoOpen(true)}
-                className="px-7 py-3 rounded-lg border border-accent/40 text-accent font-semibold hover:bg-accent/10 
+                className="px-8 py-4 rounded-lg border border-border text-foreground font-bold hover:bg-muted/50 
                 transition-all flex items-center justify-center gap-2 backdrop-blur-sm"
               >
-                View Mock Demo
-                <ChevronRight className="w-4 h-4" />
+                Sentinel Overview
+                <Search className="w-4 h-4" />
               </button>
             </div>
 
-            {/* Feature highlights */}
-            <div className="grid grid-cols-2 lg:grid-cols-3 gap-5 pt-10 text-sm text-muted-foreground">
+            {/* Feature highlights - Result Driven */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 pt-10 text-xs font-mono font-bold uppercase tracking-widest text-muted-foreground/80">
               {[
-                { icon: ShieldCheck, label: "Security by Default" },
-                { icon: GitBranch, label: "GitHub-native Workflow" },
-                { icon: Zap, label: "Blazing Fast Scans" },
+                { icon: Shield, label: "Zero-Noise Scan" },
+                { icon: GitPullRequest, label: "Secure PR Fixes" },
+                { icon: Zap, label: "<120s Resolution" },
               ].map((item, index) => (
                 <div key={index} className="flex items-center gap-2">
                   <item.icon className="w-4 h-4 text-accent" />
@@ -82,10 +77,13 @@ export default function HeroSection() {
             </div>
           </div>
 
-          {/* Right Side - Code animation */}
-          <div className="hidden md:block animate-fade-left">
-            <div className="rounded-xl border border-white/10 bg-black/20 backdrop-blur-xl shadow-2xl p-4">
-              <AnimatedCode />
+          {/* Right Side - Sentinel Alert Visual */}
+          <div className="animate-fade-left">
+            <div className="relative group">
+              <div className="absolute -inset-1 bg-gradient-to-r from-accent/50 to-purple-500/50 rounded-2xl blur opacity-25 group-hover:opacity-40 transition duration-1000 group-hover:duration-200"></div>
+              <div className="relative">
+                <SentinelAlert />
+              </div>
             </div>
           </div>
 

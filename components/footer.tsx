@@ -17,37 +17,29 @@ export default function Footer() {
         <div className="absolute -bottom-20 right-1/4 w-72 h-72 bg-accent/10 rounded-full blur-3xl" />
       </div>
 
-      <div className="relative max-w-5xl mx-auto px-6 py-12 flex flex-col items-center gap-6">
+      <div className="relative max-w-5xl mx-auto px-6 py-12 flex flex-col items-center ">
         {/* Logo */}
-         <div className="flex items-center gap-3">
+         <div className="flex items-center">
           {/* Light mode logo */}
+          {/* <img src="/logo.svg" alt="CodeSentinel Logo" className="w-80" /> */}
           <Image
-            src="/logo-dark.png"
+            src="/logo/logo.png"
             alt="CodeSentinel Logo"
-            width={240}
-            height={10}
-            className="block dark:hidden object-contain"
-            priority
-          />
-          {/* Dark mode logo */}
-          <Image
-            src="/logo-light.png"
-            alt="CodeSentinel Logo"
-            width={240}
-            height={10}
-            className="hidden dark:block object-contain"
+            width={260}
+            height={52}
+            className="object-contain invert hue-rotate-180 brightness-95 drop-shadow-[0_2px_10px_rgba(0,0,0,0.05)] dark:invert-0 dark:hue-rotate-0 dark:drop-shadow-[0_0_25px_rgba(45,212,191,0.2)] transition-all duration-500 hover:scale-[1.03] active:scale-[0.97]"
             priority
           />
         </div>
      
 
         {/* Short Text */}
-        <p className="text-center text-sm text-muted-foreground max-w-md">
-          Building the future of secure development. Join the waitlist to get early access.
+        <p className="text-center text-sm text-muted-foreground max-w-md italic font-medium mb-3">
+          The Security Engineer You Can't Afford. Delivering Zero-Noise CI protection for world-class engineering teams.
         </p>
 
         {/* Socials Only — Minimal Authentic UI */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 mb-4">
           <a
             href="https://github.com"
             target="_blank"

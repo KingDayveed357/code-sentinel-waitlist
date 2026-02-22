@@ -7,66 +7,34 @@ import {
   Check,
   Copy,
   Trophy,
-  Users,
   Loader2,
   Mail,
   Twitter,
   Linkedin,
+  ShieldCheck,
+  Zap,
 } from "lucide-react";
-import { supabase } from "@/lib/supabase-client";
-
-interface WaitlistEntry {
-  id: string;
-  email: string;
-  referral_code: string;
-  referral_count: number;
-  position: number;
-  created_at: string;
-}
 
 export default function GamifiedWaitlist() {
   const [email, setEmail] = useState("");
+  const [honeypot, setHoneypot] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [copied, setCopied] = useState(false);
   const [referralCount, setReferralCount] = useState(0);
   const [referralCode, setReferralCode] = useState("");
   const [position, setPosition] = useState<number | null>(null);
-  const [totalWaitlist, setTotalWaitlist] = useState(0);
   const [error, setError] = useState("");
   const [referredBy, setReferredBy] = useState<string | null>(null);
-  const [loadingCount, setLoadingCount] = useState(true);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-
-    // Get referral code from URL
     const params = new URLSearchParams(window.location.search);
     const refCode = params.get("ref");
     if (refCode) {
       setReferredBy(refCode);
     }
-
-    // Fetch total waitlist count
-    fetchTotalCount();
   }, []);
-
-  const fetchTotalCount = async () => {
-    try {
-      const { count, error } = await supabase
-        .from("waitlist_entries")
-        .select("*", { count: "exact", head: true });
-
-      if (error) throw error;
-      if (count !== null) {
-        setTotalWaitlist(count);
-      }
-    } catch (err) {
-      console.error("Error fetching count:", err);
-    } finally {
-      setLoadingCount(false);
-    }
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -76,66 +44,31 @@ export default function GamifiedWaitlist() {
     setError("");
 
     try {
-      // Check if email already exists
-      const { data: existingEntry } = await supabase
-        .from("waitlist_entries")
-        .select("*")
-        .eq("email", email)
-        .single();
+      const response = await fetch("/api/waitlist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email,
+          referral_code: referredBy || undefined,
+          honeypot: honeypot || undefined,
+        }),
+      });
 
-      if (existingEntry) {
-        // Email already on waitlist, show their info
-        setReferralCode(existingEntry.referral_code);
-        setReferralCount(existingEntry.referral_count);
-        setPosition(existingEntry.position);
-        setSubmitted(true);
-        setSubmitting(false);
-        return;
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Something went wrong");
       }
 
-      // If referred by someone, increment their count
-      if (referredBy) {
-        const { data: referrer } = await supabase
-          .from("waitlist_entries")
-          .select("referral_count")
-          .eq("referral_code", referredBy)
-          .single();
+      setReferralCode(data.user.referral_code);
+      setReferralCount(data.user.referral_count);
+      setPosition(data.user.position);
+      setSubmitted(true);
 
-        if (referrer) {
-          await supabase
-            .from("waitlist_entries")
-            .update({ referral_count: referrer.referral_count + 1 })
-            .eq("referral_code", referredBy);
-        }
-      }
-
-      // Insert new entry
-      const { data, error: insertError } = await supabase
-        .from("waitlist_entries")
-        .insert([
-          {
-            email,
-            referred_by: referredBy,
-          },
-        ])
-        .select()
-        .single();
-
-      if (insertError) throw insertError;
-
-      if (data) {
-        setReferralCode(data.referral_code);
-        setReferralCount(data.referral_count);
-        setPosition(data.position);
-        setSubmitted(true);
-        setTotalWaitlist((prev) => prev + 1);
-
-        // Update URL with referral code
-        if (typeof window !== "undefined") {
-          const newUrl = new URL(window.location.href);
-          newUrl.searchParams.delete("ref");
-          window.history.replaceState({}, "", newUrl);
-        }
+      if (typeof window !== "undefined") {
+        const newUrl = new URL(window.location.href);
+        newUrl.searchParams.delete("ref");
+        window.history.replaceState({}, "", newUrl);
       }
     } catch (err: any) {
       console.error("Error submitting:", err);
@@ -161,7 +94,7 @@ export default function GamifiedWaitlist() {
     if (typeof window === "undefined") return;
     const link = getReferralLink();
     const text =
-      "Join me on the CodeSentinel waitlist - automated security scanning for developers!";
+      "Securing my repos with CodeSentinel - Absolute CI Security for high-velocity teams.";
 
     const urls = {
       twitter: `https://twitter.com/intent/tweet?text=${encodeURIComponent(
@@ -171,7 +104,7 @@ export default function GamifiedWaitlist() {
         link
       )}`,
       email: `mailto:?subject=${encodeURIComponent(
-        "Join CodeSentinel"
+        "Join the Sentinel"
       )}&body=${encodeURIComponent(`${text}\n\n${link}`)}`,
     };
 
@@ -179,195 +112,198 @@ export default function GamifiedWaitlist() {
   };
 
   const referralTiers = [
-    { count: 1, reward: "Skip 50 spots", unlocked: referralCount >= 1 },
-    { count: 5, reward: "Early Beta Access", unlocked: referralCount >= 5 },
-    { count: 10, reward: "1 Month Pro Free", unlocked: referralCount >= 10 },
+    { count: 1, reward: "Priority Beta Wave", unlocked: referralCount >= 1 },
+    { count: 5, reward: "Founder's Lifetime 50%", unlocked: referralCount >= 5 },
+    { count: 10, reward: "Sentinel Verified Badge", unlocked: referralCount >= 10 },
   ];
 
   return (
-    <section id="waitlist" className="py-20 px-4 sm:px-6 lg:px-8 relative">
+    <section id="waitlist" className="py-24 px-4 sm:px-6 lg:px-8 relative bg-black/5 dark:bg-white/[0.02]">
       <div className="absolute inset-0 -z-10">
-        <div className="absolute -top-32 right-1/3 w-96 h-96 bg-accent/10 rounded-full blur-3xl opacity-30" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-accent/5 rounded-full blur-[120px]" />
       </div>
 
       <div className="max-w-4xl mx-auto">
-        <div className="relative rounded-2xl p-8 md:p-12 shadow-2xl bg-gradient-to-br from-card to-card/50">
-          {/* Animated border */}
+        <div className="relative rounded-3xl p-8 md:p-16 border border-border/50 bg-card shadow-[0_0_50px_-12px_rgba(0,0,0,0.5)] overflow-hidden">
+           {/* Animated Sentinel Ring */}
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-1 bg-gradient-to-r from-transparent via-accent to-transparent opacity-20" />
           <div className="absolute inset-0 rounded-2xl overflow-hidden pointer-events-none">
             <div className="absolute inset-0 rounded-2xl border border-accent/20" />
             <div
               className="absolute inset-0 rounded-2xl"
               style={{
                 background: `conic-gradient(from 0deg, transparent 0%, transparent 85%, rgba(var(--accent-rgb, 120, 119, 198), 0.6) 90%, transparent 95%, transparent 100%)`,
-                animation: "rotateBorder 4s linear infinite",
+                
               }}
             />
           </div>
-          <div className="text-center space-y-6">
-            <h2 className="text-4xl md:text-5xl font-bold text-balance">
-              Join the CodeSentinel Waitlist
-            </h2>
-            <p className="text-lg text-muted-foreground">
-              Be among the first developers to experience the future of secure
-              software development.
-            </p>
+          <div className="text-center space-y-8">
+            <div className="space-y-4">
+              <h2 className="text-4xl md:text-6xl font-extrabold tracking-tight text-balance">
+                Secure Your Slot.
+              </h2>
+              <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto font-medium">
+                We are admitting teams in private waves to ensure zero-noise delivery. Join the list to secure priority access and founder-only rewards.
+              </p>
+            </div>
 
             {!submitted ? (
-              <form onSubmit={handleSubmit} className="space-y-4 pt-4">
-                <div className="flex flex-col sm:flex-row gap-3">
+              <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl mx-auto">
+                {/* Honeypot field - Visually hidden */}
+                <div className="hidden" aria-hidden="true">
+                  <input
+                    type="text"
+                    name="full_name_hp"
+                    tabIndex={-1}
+                    autoComplete="off"
+                    value={honeypot}
+                    onChange={(e) => setHoneypot(e.target.value)}
+                  />
+                </div>
+
+                <div className="flex flex-col sm:flex-row gap-4">
                   <input
                     type="email"
-                    placeholder="you@company.com"
+                    placeholder="founder@company.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
                     disabled={submitting}
-                    className="flex-1 px-4 py-3 rounded-lg bg-input border border-input text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent transition-all disabled:opacity-50"
+                    className="flex-1 px-6 py-4 rounded-xl bg-background border border-border text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent transition-all disabled:opacity-50 text-lg font-medium"
                   />
                   <button
                     type="submit"
                     disabled={submitting}
-                    className="px-8 py-3 rounded-lg font-semibold whitespace-nowrap transition-all active:scale-95 bg-accent text-accent-foreground hover:opacity-90 hover:shadow-lg hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                    className="px-8 py-4 rounded-xl font-bold whitespace-nowrap transition-all active:scale-95 bg-accent text-accent-foreground hover:opacity-90 shadow-xl shadow-accent/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-lg"
                   >
                     {submitting ? (
                       <>
-                        <Loader2 className="w-4 h-4 animate-spin" />
-                        Joining...
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                        Verifying...
                       </>
                     ) : (
-                      "Join Waitlist"
+                      "Join the Sentinel"
                     )}
                   </button>
                 </div>
                 {error && (
-                  <p className="text-sm text-red-500 text-center">{error}</p>
+                  <p className="text-sm font-bold text-red-500 animate-shake">{error}</p>
                 )}
-                {referredBy && (
-                  <p className="text-sm text-accent text-center">
-                    🎉 You've been referred! You'll get priority access.
-                  </p>
-                )}
+                <div className="flex items-center justify-center gap-6 text-[10px] uppercase font-bold tracking-widest text-muted-foreground/60 pt-2 font-mono">
+                  <div className="flex items-center gap-1.5"><ShieldCheck className="w-3 h-3" /> Secure PRs</div>
+                  <div className="flex items-center gap-1.5"><Zap className="w-3 h-3" /> Zero Noise</div>
+                </div>
               </form>
             ) : (
-              <div className="space-y-6 pt-4">
-                <div className="p-6 rounded-xl bg-accent/10 border border-accent/30">
-                  <div className="flex items-center justify-center gap-2 mb-3">
-                    <Check className="w-6 h-6 text-green-500" />
-                    <h3 className="text-xl font-bold text-foreground">
-                      You're on the list!
-                    </h3>
+              <div className="space-y-10 animate-fade-up">
+                <div className="p-10 rounded-2xl bg-accent/5 border border-accent/20 relative overflow-hidden group">
+                  <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                    <ShieldCheck className="w-24 h-24 text-accent" />
                   </div>
-                  {position && (
-                    <p className="text-2xl font-bold text-accent mb-2">
-                      Position #{position}
+                  
+                  <div className="relative z-10 space-y-4">
+                    <div className="flex items-center justify-center gap-3">
+                      <div className="p-2 rounded-full bg-green-500/10 text-green-500">
+                        <Check className="w-6 h-6" />
+                      </div>
+                      <h3 className="text-2xl font-extrabold text-foreground">
+                        Initialization Complete.
+                      </h3>
+                    </div>
+                    {position && (
+                      <div className="space-y-1">
+                        <p className="text-5xl font-extrabold text-accent tracking-tighter">
+                          #{position.toLocaleString()}
+                        </p>
+                        <p className="text-sm font-bold text-muted-foreground uppercase tracking-widest font-mono">
+                          Sentinel Queue Position
+                        </p>
+                      </div>
+                    )}
+                    <p className="text-muted-foreground max-w-sm mx-auto font-medium">
+                      An authentication link has been sent to your inbox. Verification is required to secure your slot.
                     </p>
-                  )}
-                  <p className="text-sm text-muted-foreground">
-                    Check your email for confirmation. Share your link below to
-                    move up!
-                  </p>
+                  </div>
                 </div>
 
-                <div className="pt-4 space-y-6 border-t border-accent/10">
-                  <div>
-                    <p className="text-sm font-semibold text-muted-foreground mb-4 flex items-center justify-center gap-2">
-                      <Trophy className="w-4 h-4 text-accent" />
-                      Referral Rewards ({referralCount} referrals)
+                <div className="pt-4 space-y-8">
+                  <div className="space-y-6">
+                    <p className="text-xs font-bold text-muted-foreground uppercase tracking-[0.2em] font-mono flex items-center justify-center gap-3">
+                       Referral Rewards
                     </p>
-                    <div className="grid grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                       {referralTiers.map((tier, idx) => (
                         <div
                           key={idx}
-                          className={`p-4 rounded-lg border transition-all ${
+                          className={`p-6 rounded-2xl border transition-all duration-500 ${
                             tier.unlocked
-                              ? "border-accent/50 bg-accent/10 scale-105"
-                              : "border-border/30 bg-muted/20 opacity-50"
+                              ? "border-accent bg-accent/10 scale-105 shadow-lg shadow-accent/5"
+                              : "border-border/50 bg-muted/50 opacity-40"
                           }`}
                         >
-                          <div className="flex items-center justify-center gap-2 mb-2">
+                          <div className="flex items-center justify-center mb-3">
                             <Trophy
-                              className={`w-4 h-4 ${
+                              className={`w-5 h-5 ${
                                 tier.unlocked
                                   ? "text-accent"
                                   : "text-muted-foreground"
                               }`}
                             />
-                            <span className="text-xs font-bold text-accent">
-                              {tier.count}
-                            </span>
                           </div>
-                          <p className="text-xs font-semibold text-foreground text-center">
+                          <p className={`text-xs font-extrabold text-center uppercase tracking-tight ${tier.unlocked ? 'text-foreground' : 'text-muted-foreground'}`}>
                             {tier.reward}
                           </p>
-                          {tier.unlocked && (
-                            <Check className="w-4 h-4 text-green-500 mx-auto mt-2" />
-                          )}
+                          <p className="text-[10px] font-bold text-accent text-center mt-2 font-mono">
+                            {tier.count} REF
+                          </p>
                         </div>
                       ))}
                     </div>
                   </div>
 
-                  <div className="space-y-3">
-                    <p className="text-sm text-muted-foreground font-semibold">
-                      Share your referral link:
+                  <div className="space-y-4 max-w-md mx-auto">
+                    <p className="text-sm font-bold text-foreground">
+                      Invite other Founders:
                     </p>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 p-1.5 rounded-xl bg-background border border-border group focus-within:border-accent/50 transition-colors">
                       <input
                         type="text"
                         value={getReferralLink()}
                         readOnly
-                        className="flex-1 px-3 py-2 rounded-lg bg-input border border-input text-xs text-foreground select-all"
+                        className="flex-1 px-3 py-2 bg-transparent text-xs font-mono text-foreground focus:outline-none"
                       />
                       <button
                         onClick={handleCopyLink}
-                        className="p-2.5 hover:bg-accent/20 rounded-lg transition-colors"
+                        className="p-3 bg-accent/10 hover:bg-accent text-accent hover:text-accent-foreground rounded-lg transition-all"
                         title="Copy link"
                       >
                         {copied ? (
-                          <Check className="w-5 h-5 text-green-500" />
+                          <Check className="w-4 h-4" />
                         ) : (
-                          <Copy className="w-5 h-5 text-accent" />
+                          <Copy className="w-4 h-4" />
                         )}
                       </button>
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-center gap-4 flex-wrap pt-2 border-t border-accent/10 pt-6">
+                  <div className="flex items-center justify-center gap-4 pt-6 border-t border-border/50">
                     <button
                       onClick={() => handleShare("twitter")}
-                      className="p-3 rounded-lg border border-border/50 hover:bg-accent/10 hover:border-accent/50 transition-colors hover:scale-110 active:scale-95 duration-200"
-                      title="Share on Twitter"
+                      className="p-4 rounded-full border border-border hover:bg-accent/10 hover:border-accent/50 transition-all hover:scale-110 active:scale-95 group"
                     >
-                      <Twitter className="w-5 h-5" />
+                      <Twitter className="w-5 h-5 group-hover:text-accent transition-colors" />
                     </button>
                     <button
                       onClick={() => handleShare("linkedin")}
-                      className="p-3 rounded-lg border border-border/50 hover:bg-accent/10 hover:border-accent/50 transition-colors hover:scale-110 active:scale-95 duration-200"
-                      title="Share on LinkedIn"
+                      className="p-4 rounded-full border border-border hover:bg-accent/10 hover:border-accent/50 transition-all hover:scale-110 active:scale-95 group"
                     >
-                      <Linkedin className="w-5 h-5" />
+                      <Linkedin className="w-5 h-5 group-hover:text-accent transition-colors" />
                     </button>
                     <button
                       onClick={() => handleShare("email")}
-                      className="p-3 rounded-lg border border-border/50 hover:bg-accent/10 hover:border-accent/50 transition-colors hover:scale-110 active:scale-95 duration-200"
-                      title="Share via Email"
+                      className="p-4 rounded-full border border-border hover:bg-accent/10 hover:border-accent/50 transition-all hover:scale-110 active:scale-95 group"
                     >
-                      <Mail className="w-5 h-5" />
-                    </button>
-                    <button
-                      onClick={() => {
-                        if (typeof window !== "undefined" && navigator.share) {
-                          navigator.share({
-                            title: "Join CodeSentinel",
-                            text: "Join me on the CodeSentinel waitlist!",
-                            url: getReferralLink(),
-                          });
-                        }
-                      }}
-                      className="p-3 rounded-lg border border-border/50 hover:bg-accent/10 hover:border-accent/50 transition-colors hover:scale-110 active:scale-95 duration-200"
-                      title="Share"
-                    >
-                      <Share2 className="w-5 h-5" />
+                      <Mail className="w-5 h-5 group-hover:text-accent transition-colors" />
                     </button>
                   </div>
                 </div>
@@ -375,22 +311,8 @@ export default function GamifiedWaitlist() {
             )}
 
             {!submitted && (
-              <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground pt-4">
-                <Users className="w-4 h-4 text-accent" />
-                 <span>
-      <span className="font-semibold text-foreground">
-        {loadingCount ? (
-          <span className="inline-flex gap-1">
-            <span className="w-1 h-1 rounded-full bg-accent animate-bounce" style={{ animationDelay: '0s' }} />
-            <span className="w-1 h-1 rounded-full bg-accent animate-bounce" style={{ animationDelay: '0.2s' }} />
-            <span className="w-1 h-1 rounded-full bg-accent animate-bounce" style={{ animationDelay: '0.4s' }} />
-          </span>
-        ) : (
-          totalWaitlist.toLocaleString()
-        )}
-      </span>{" "}
-      developers already on the waitlist
-    </span>
+              <div className="flex items-center justify-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground font-mono">
+                <span>Private Beta Waves • Limited Slots</span>
               </div>
             )}
           </div>
