@@ -52,12 +52,12 @@ export default function DashboardPreview() {
         </div>
 
         <div className="rounded-2xl border border-border/50 overflow-hidden shadow-2xl bg-card transition-all duration-500 hover:border-accent/30">
-          <div className="p-10">
+          <div className="p-6 md:p-10">
             <div className="space-y-8 animate-slide-in-down">
               {/* Header bar */}
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div className="space-y-1">
-                  <h3 className="text-2xl font-black tracking-tight font-mono uppercase">Sentinel Overview</h3>
+                  <h3 className="text-xl md:text-2xl font-black tracking-tight font-mono uppercase">Sentinel Overview</h3>
                   <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Scanning Active: 2ms ago</p>
                 </div>
                 <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-accent/10 border border-accent/30">
@@ -67,7 +67,7 @@ export default function DashboardPreview() {
               </div>
 
               {/* Stats grid */}
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
                 {[
                   { label: "Repositories Guarded", value: displayStats.repos, color: "text-accent" },
                   { label: "Scans (Last 24h)", value: displayStats.scans, color: "text-foreground" },
@@ -80,7 +80,7 @@ export default function DashboardPreview() {
                 ].map((stat, idx) => (
                   <div
                     key={idx}
-                    className="p-6 rounded-xl bg-muted/30 border border-border/50 hover:border-accent/50 hover:bg-muted/50 transition-all duration-300 group cursor-default"
+                    className="p-4 md:p-6 rounded-xl bg-muted/30 border border-border/50 hover:border-accent/50 hover:bg-muted/50 transition-all duration-300 group cursor-default"
                   >
                     <p className="text-[10px] font-bold text-muted-foreground mb-2 group-hover:text-accent transition-colors uppercase tracking-widest">
                       {stat.label}
