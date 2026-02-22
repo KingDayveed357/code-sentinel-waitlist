@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { X, Check, AlertCircle, Lock, Github, Loader2, Twitter, Linkedin, Mail, Copy, Share2 } from "lucide-react"
 
 type DemoStep = "signin" | "import" | "scan" | "suggestions" | "dashboard" | "cta"
@@ -18,6 +18,42 @@ export default function DemoModal({ isOpen, onClose }: { isOpen: boolean; onClos
   const [isScanning, setIsScanning] = useState(false)
   const [showShareMenu, setShowShareMenu] = useState(false)
   const [copied, setCopied] = useState(false)
+  const [displayStats, setDisplayStats] = useState({
+    repos: 0,
+    scans: 0,
+    vulnerabilities: 0,
+  })
+
+  useEffect(() => {
+    if (currentStep !== "dashboard") return
+
+    const finalStats = {
+      repos: importedRepos.length,
+      scans: importedRepos.length * 5 + 12,
+      vulnerabilities: importedRepos.reduce((acc, repo) => acc + (vulnerabilities[repo]?.critical || 0), 0),
+    }
+
+    const animationDuration = 1000
+    const startTime = Date.now()
+
+    const animateCounter = () => {
+      const elapsed = Date.now() - startTime
+      const progress = Math.min(elapsed / animationDuration, 1)
+
+      setDisplayStats({
+        repos: Math.floor(finalStats.repos * progress),
+        scans: Math.floor(finalStats.scans * progress),
+        vulnerabilities: Math.floor(finalStats.vulnerabilities * progress),
+      })
+
+      if (progress < 1) {
+        requestAnimationFrame(animateCounter)
+      }
+    }
+
+    const frameId = requestAnimationFrame(animateCounter)
+    return () => cancelAnimationFrame(frameId)
+  }, [currentStep, importedRepos])
 
   const exampleRepos = [
     { name: "react-app", type: "Frontend" },
@@ -300,38 +336,72 @@ export default function DemoModal({ isOpen, onClose }: { isOpen: boolean; onClos
 
           {/* Step 5: Dashboard */}
           {currentStep === "dashboard" && (
-            <div className="p-8 space-y-6">
-              <div>
-                <h2 className="text-2xl font-bold mb-2">CodeSentinel Dashboard</h2>
-                <p className="text-muted-foreground">Complete overview and management</p>
-              </div>
-              <div className="grid grid-cols-3 gap-4">
-                <div className="p-4 border border-accent/20 rounded-lg bg-accent/5">
-                  <p className="text-sm text-muted-foreground mb-1">Total Repos</p>
-                  <p className="text-3xl font-bold">{importedRepos.length}</p>
+            <div className="p-6 md:p-8 space-y-6 animate-fade-up">
+              <div className="flex items-center justify-between">
+                <div className="space-y-1">
+                  <h2 className="text-xl md:text-2xl font-black tracking-tight font-mono uppercase">Sentinel Overview</h2>
+                  <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Scanning Active: 2ms ago</p>
                 </div>
-                <div className="p-4 border border-accent/20 rounded-lg bg-accent/5">
-                  <p className="text-sm text-muted-foreground mb-1">Issues Found</p>
-                  <p className="text-3xl font-bold">
-                    {importedRepos.reduce((acc, repo) => acc + (vulnerabilities[repo]?.critical || 0), 0)}
+                <div className="hidden sm:inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent/10 border border-accent/20">
+                  <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-accent font-mono">Live</span>
+                </div>
+              </div>
+
+              {/* Stats grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="p-4 rounded-xl bg-muted/30 border border-border/50 hover:border-accent/30 transition-all group">
+                  <p className="text-[10px] font-bold text-muted-foreground mb-1 group-hover:text-accent transition-colors uppercase tracking-widest">
+                    Repositories
+                  </p>
+                  <p className="text-3xl font-black tracking-tighter text-foreground">
+                    {displayStats.repos}
                   </p>
                 </div>
-                <div className="p-4 border border-accent/20 rounded-lg bg-accent/5">
-                  <p className="text-sm text-muted-foreground mb-1">AI Fixes</p>
-                  <p className="text-3xl font-bold">{importedRepos.length * 2}</p>
+                <div className="p-4 rounded-xl bg-muted/30 border border-border/50 hover:border-accent/30 transition-all group">
+                  <p className="text-[10px] font-bold text-muted-foreground mb-1 group-hover:text-accent transition-colors uppercase tracking-widest">
+                    Vulnerabilities
+                  </p>
+                  <p className={`text-3xl font-black tracking-tighter ${displayStats.vulnerabilities > 0 ? 'text-red-500' : 'text-green-500'}`}>
+                    {displayStats.vulnerabilities}
+                  </p>
+                </div>
+                <div className="p-4 rounded-xl bg-muted/30 border border-border/50 hover:border-accent/30 transition-all group">
+                  <p className="text-[10px] font-bold text-muted-foreground mb-1 group-hover:text-accent transition-colors uppercase tracking-widest">
+                    Secure PRs
+                  </p>
+                  <p className="text-3xl font-black tracking-tighter text-blue-500">
+                    {displayStats.scans}
+                  </p>
                 </div>
               </div>
-              <div className="border border-accent/20 rounded-lg p-4 bg-accent/5 h-40 flex items-center justify-center">
-                <div className="text-center text-muted-foreground">
-                  <Loader2 className="w-8 h-8 mx-auto mb-2 animate-spin text-accent" />
-                  <p>Security Vulnerability Chart</p>
+
+              {/* Real Animated Chart */}
+              <div className="p-6 rounded-xl bg-card border border-border/50 h-44 flex items-center justify-center relative overflow-hidden group">
+                 <div className="absolute inset-0 bg-gradient-to-br from-accent/5 to-transparent opacity-50" />
+                 <div className="relative z-10 text-center space-y-3 w-full">
+                  <div className="flex justify-center gap-3 items-end h-20">
+                    {[0.4, 0.7, 0.5, 0.9, 0.6, 0.8, 1].map((p, i) => (
+                      <div
+                        key={i}
+                        className="w-4 rounded-t-sm bg-accent/80 transition-all duration-1000 ease-out"
+                        style={{
+                          height: currentStep === "dashboard" ? `${p * 100}%` : "0%",
+                          opacity: 0.5 + (p * 0.5),
+                        }}
+                      />
+                    ))}
+                  </div>
+                  <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Weekly Threat Activity</p>
                 </div>
               </div>
+
               <button
                 onClick={handleNextStep}
-                className="w-full px-6 py-3 bg-accent text-accent-foreground font-semibold rounded-lg hover:opacity-90 transition-opacity"
+                className="w-full px-6 py-4 bg-accent text-accent-foreground font-bold rounded-xl hover:opacity-90 active:scale-[0.98] transition-all shadow-xl shadow-accent/20 flex items-center justify-center gap-2"
               >
-                Ready to Get Started?
+                Secure My Projects Now
+                <Check className="w-5 h-5" />
               </button>
             </div>
           )}

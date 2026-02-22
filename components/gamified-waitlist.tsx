@@ -118,13 +118,13 @@ export default function GamifiedWaitlist() {
   ];
 
   return (
-    <section id="waitlist" className="py-24 px-4 sm:px-6 lg:px-8 relative bg-black/5 dark:bg-white/[0.02]">
+    <section id="waitlist" className="py-24 px-4 sm:px-6 lg:px-8 relative bg-black/5 dark:bg-white/[0.02] overflow-hidden">
       <div className="absolute inset-0 -z-10">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-accent/5 rounded-full blur-[120px]" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] sm:w-[800px] h-[300px] sm:h-[800px] bg-accent/5 rounded-full blur-[80px] sm:blur-[120px]" />
       </div>
 
       <div className="max-w-4xl mx-auto">
-        <div className="relative rounded-3xl p-8 md:p-16 border border-border/50 bg-card shadow-[0_0_50px_-12px_rgba(0,0,0,0.5)] overflow-hidden">
+        <div className="relative rounded-3xl p-6 md:p-16 border border-border/50 bg-card shadow-[0_0_50px_-12px_rgba(0,0,0,0.5)] overflow-hidden">
            {/* Animated Sentinel Ring */}
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-1 bg-gradient-to-r from-transparent via-accent to-transparent opacity-20" />
           <div className="absolute inset-0 rounded-2xl overflow-hidden pointer-events-none">
@@ -139,11 +139,11 @@ export default function GamifiedWaitlist() {
           </div>
           <div className="text-center space-y-8">
             <div className="space-y-4">
-              <h2 className="text-4xl md:text-6xl font-extrabold tracking-tight text-balance">
+              <h2 className="text-3xl sm:text-4xl md:text-6xl font-extrabold tracking-tight text-balance">
                 Secure Your Slot.
               </h2>
               <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto font-medium">
-                We are admitting teams in private waves to ensure zero-noise delivery. Join the list to secure priority access and founder-only rewards.
+                We are admitting teams in private waves to ensure zero-noise delivery. Join the list to secure priority access.
               </p>
             </div>
 
@@ -196,7 +196,7 @@ export default function GamifiedWaitlist() {
               </form>
             ) : (
               <div className="space-y-10 animate-fade-up">
-                <div className="p-10 rounded-2xl bg-accent/5 border border-accent/20 relative overflow-hidden group">
+                <div className="p-6 md:p-10 rounded-2xl bg-accent/5 border border-accent/20 relative overflow-hidden group">
                   <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
                     <ShieldCheck className="w-24 h-24 text-accent" />
                   </div>

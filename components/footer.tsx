@@ -7,7 +7,7 @@ export default function Footer() {
   const currentYear = new Date().getFullYear()
 
   return (
-    <footer className="relative mt-20">
+    <footer className="relative mt-20 overflow-hidden">
       {/* Stronger Glassmorphism Background */}
       <div className="absolute inset-0 bg-white/5 backdrop-blur-2xl border-t border-white/10" />
 

@@ -79,11 +79,8 @@ export default function HeroSection() {
 
           {/* Right Side - Sentinel Alert Visual */}
           <div className="animate-fade-left">
-            <div className="relative group">
-              <div className="absolute -inset-1 bg-gradient-to-r from-accent/50 to-purple-500/50 rounded-2xl blur opacity-25 group-hover:opacity-40 transition duration-1000 group-hover:duration-200"></div>
-              <div className="relative">
-                <SentinelAlert />
-              </div>
+            <div className="relative">
+              <SentinelAlert />
             </div>
           </div>
 

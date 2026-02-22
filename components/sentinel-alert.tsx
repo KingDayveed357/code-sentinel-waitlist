@@ -5,7 +5,7 @@ import { Shield, Sparkles, AlertTriangle, CheckCircle2 } from "lucide-react"
 
 export default function SentinelAlert() {
   return (
-    <div className="w-full max-w-2xl mx-auto font-mono text-sm overflow-hidden rounded-xl border border-border/50 bg-card shadow-2xl">
+    <div className="w-full max-w-2xl mx-auto font-mono text-sm overflow-hidden rounded-xl border border-border/50 bg-card ">
       <div className="flex items-center justify-between border-b border-border/50 bg-muted/50 px-4 py-2">
         <div className="flex items-center gap-2">
           <Shield className="w-4 h-4 text-accent" />
