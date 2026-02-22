@@ -8,7 +8,7 @@ export default function HeroSection() {
 
   return (
     <>
-      <section className="relative min-h-screen pt-28 pb-20 px-4 sm:px-6 mr-3 lg:px-8 overflow-hidden">
+      <section className="relative min-h-screen pt-28 pb-20 px-4 sm:px-8  lg:px-8 overflow-hidden">
 
         {/* Background layers */}
         <div className="absolute inset-0 -z-10">
