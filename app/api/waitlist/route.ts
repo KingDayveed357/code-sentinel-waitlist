@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { supabaseAdmin } from "@/lib/supabase-admin";
 import { rateLimit } from "@/lib/rate-limit";
+import { sendWaitlistConfirmation } from "@/lib/email";
 
 const waitlistSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -78,7 +79,6 @@ export async function POST(req: NextRequest) {
         {
           email,
           referred_by: referral_code || null,
-          // is_verified: false, // Double opt-in required (schema check)
         },
       ])
       .select()
@@ -86,9 +86,16 @@ export async function POST(req: NextRequest) {
 
     if (error) throw error;
 
+    // Send confirmation email (async, but don't block response)
+    // We trigger it without awaiting the full result to keep API responsive,
+    // but we use a catch to log any errors.
+    sendWaitlistConfirmation({ email }).catch((err) => {
+      console.error("Delayed Email Error:", err);
+    });
+
     return NextResponse.json(
       {
-        message: "Success! Please verify your email.",
+        message: "You’re officially on the CodeSentinel waitlist. Check your inbox for confirmation.",
         user: {
           position: data.position,
           referral_code: data.referral_code,
