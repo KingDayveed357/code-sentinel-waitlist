@@ -234,7 +234,7 @@ export default function GamifiedWaitlist() {
                       </div>
                     )}
                     <p className="text-muted-foreground max-w-sm mx-auto font-medium">
-                      An authentication link has been sent to your inbox. Verification is required to secure your slot.
+                      A confirmation email has been sent to your inbox. You have successfully secured your spot on the waitlist.
                     </p>
                   </div>
                 </div>
