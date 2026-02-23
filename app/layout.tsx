@@ -68,7 +68,7 @@ export const metadata: Metadata = {
     siteName: "CodeSentinel",
     images: [
       {
-        url: "/logo/logo-preview.png",
+        url: "/logo/logo.png",
         width: 1200,
         height: 630,
         alt: "CodeSentinel - Automated Security Scanning",
@@ -80,7 +80,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "CodeSentinel - Ship Secure Code with Automated Security Scanning",
     description: "Automate security scans, enforce policies, and ship with confidence. Join 2,800+ developers protecting their code.",
-    images: ["/logo/logo-preview.png"],
+    images: ["/logo/logo.png"],
     creator: "@codesentinel",
   },
 
@@ -111,7 +111,7 @@ export const metadata: Metadata = {
         type: "image/svg+xml",
       },
     ],
-    apple: "/apple-icon.png",
+    apple: "/logo/logo-icons.png",
   },
 
   manifest: "/manifest.json",

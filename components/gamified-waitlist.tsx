@@ -9,11 +9,22 @@ import {
   Trophy,
   Loader2,
   Mail,
-  Twitter,
   Linkedin,
   ShieldCheck,
   Zap,
 } from "lucide-react";
+
+
+const XIcon = ({ className }: { className?: string }) => (
+  <svg 
+    viewBox="0 0 24 24" 
+    fill="currentColor" 
+    className={className}
+    aria-hidden="true"
+  >
+    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+  </svg>
+);
 
 export default function GamifiedWaitlist() {
   const [email, setEmail] = useState("");
@@ -26,6 +37,8 @@ export default function GamifiedWaitlist() {
   const [position, setPosition] = useState<number | null>(null);
   const [error, setError] = useState("");
   const [referredBy, setReferredBy] = useState<string | null>(null);
+
+
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -90,14 +103,14 @@ export default function GamifiedWaitlist() {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const handleShare = (platform: "twitter" | "linkedin" | "email") => {
+  const handleShare = (platform: "x" | "linkedin" | "email") => {
     if (typeof window === "undefined") return;
     const link = getReferralLink();
     const text =
       "Securing my repos with CodeSentinel - Absolute CI Security for high-velocity teams.";
 
     const urls = {
-      twitter: `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+      x: `https://x.com/intent/tweet?text=${encodeURIComponent(
         text
       )}&url=${encodeURIComponent(link)}`,
       linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
@@ -288,10 +301,10 @@ export default function GamifiedWaitlist() {
 
                   <div className="flex items-center justify-center gap-4 pt-6 border-t border-border/50">
                     <button
-                      onClick={() => handleShare("twitter")}
+                      onClick={() => handleShare("x")}
                       className="p-4 rounded-full border border-border hover:bg-accent/10 hover:border-accent/50 transition-all hover:scale-110 active:scale-95 group"
                     >
-                      <Twitter className="w-5 h-5 group-hover:text-accent transition-colors" />
+                      <XIcon className="w-5 h-5 group-hover:text-accent transition-colors" />
                     </button>
                     <button
                       onClick={() => handleShare("linkedin")}

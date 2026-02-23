@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { X, Check, AlertCircle, Lock, Github, Loader2, Twitter, Linkedin, Mail, Copy, Share2 } from "lucide-react"
+import { X, Check, AlertCircle, Lock, Github, Loader2, Linkedin, Mail, Copy, Share2 } from "lucide-react"
 
 type DemoStep = "signin" | "import" | "scan" | "suggestions" | "dashboard" | "cta"
 
@@ -10,6 +10,17 @@ interface Vulnerability {
   warning: number
   info: number
 }
+
+const XIcon = ({ className }: { className?: string }) => (
+  <svg 
+    viewBox="0 0 24 24" 
+    fill="currentColor" 
+    className={className}
+    aria-hidden="true"
+  >
+    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+  </svg>
+);
 
 export default function DemoModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   const [currentStep, setCurrentStep] = useState<DemoStep>("signin")
@@ -91,7 +102,7 @@ export default function DemoModal({ isOpen, onClose }: { isOpen: boolean; onClos
     return window.location.origin + "?demo=true"
   }
 
-  const handleShare = (platform: "twitter" | "linkedin" | "email" | "copy") => {
+  const handleShare = (platform: "x" | "linkedin" | "email" | "copy") => {
     const url = getDemoUrl()
     const text = "Check out CodeSentinel's interactive demo - automated security scanning for developers!"
 
@@ -103,7 +114,7 @@ export default function DemoModal({ isOpen, onClose }: { isOpen: boolean; onClos
     }
 
     const urls = {
-      twitter: `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`,
+      x: `https://x.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`,
       linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`,
       email: `mailto:?subject=${encodeURIComponent("CodeSentinel Demo")}&body=${encodeURIComponent(
         `${text}\n\n${url}`
@@ -439,11 +450,12 @@ export default function DemoModal({ isOpen, onClose }: { isOpen: boolean; onClos
                     <div className="absolute bottom-full left-0 right-0 mb-2 p-3 bg-card border border-accent/20 rounded-lg shadow-xl backdrop-blur-sm z-10">
                       <div className="space-y-2">
                         <button
-                          onClick={() => handleShare("twitter")}
+                          onClick={() => handleShare("x")}
                           className="w-full flex items-center gap-3 px-3 py-2 hover:bg-accent/10 rounded-lg transition-colors text-sm"
                         >
-                          <Twitter className="w-4 h-4 text-accent" />
-                          <span>Share on Twitter</span>
+                          
+                          <XIcon className="w-4 h-4 text-accent" />
+                          <span>Share on X</span>
                         </button>
                         <button
                           onClick={() => handleShare("linkedin")}
